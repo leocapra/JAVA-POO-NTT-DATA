@@ -23,4 +23,8 @@ public class AccountWallet extends Wallet {
         this.money.addAll(money);
     }
 
+    public List<String> getPix() {
+        return pix;
+    }
+
 }
