@@ -12,7 +12,7 @@ import br.com.dio.model.InvestmentWallet;
 
 public class InvestmenteRepository {
 
-    private long nextId;
+    private long nextId = 0;
     private final List<Investment> investments = new ArrayList<>();
     private final List<InvestmentWallet> wallets = new ArrayList<>();
 
@@ -24,10 +24,11 @@ public class InvestmenteRepository {
     }
 
     public InvestmentWallet initInvestment(final AccountWallet account, final long id) {
-        var accountsInUse = wallets.stream().map(InvestmentWallet::getAccount).toList();
-        if (accountsInUse.contains(account)) {
-            throw new AccountWithInvestmentException("A conta " + account + " já possui um investimento");
-
+        if (!wallets.isEmpty()) {
+            var accountsInUse = wallets.stream().map(InvestmentWallet::getAccount).toList();
+            if (accountsInUse.contains(account)) {
+                throw new AccountWithInvestmentException("A conta " + account + " já possui um investimento");
+            }
         }
         var investment = findById(id);
         CommonsRepository.checkFundsForTransaction(account, investment.initialFunds());
@@ -55,7 +56,7 @@ public class InvestmenteRepository {
     }
 
     public void updateAmount(final long percent) {
-        wallets.forEach(w -> w.updateAmount(percent));
+        wallets.forEach(w -> w.updateAmount(w.getInvestment().tax()));
     }
 
     public Investment findById(final long id) {

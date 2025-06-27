@@ -1,5 +1,6 @@
 package br.com.dio.repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import br.com.dio.exception.AccountNotFoundException;
@@ -11,17 +12,19 @@ import lombok.Getter;
 @Getter
 public class AccountRepository {
 
-    private List<AccountWallet> accounts;
+    private final List<AccountWallet> accounts = new ArrayList<>();
 
     public AccountWallet create(final List<String> pix, final long initialFunds) {
-        var pixInUse = accounts.stream()
-                .flatMap(a -> a.getPix().stream())
-                .toList();
-        for (String p : pix) {
-            if (pixInUse.contains(p)) {
-                throw new PixInUseException("O pix " + p + " já está em uso");
-
+        if (!accounts.isEmpty()) {
+            var pixInUse = accounts.stream()
+                    .flatMap(a -> a.getPix().stream())
+                    .toList();
+            for (String p : pix) {
+                if (pixInUse.contains(p)) {
+                    throw new PixInUseException("O pix " + p + " já está em uso");
+                }
             }
+
         }
 
         var newAccount = new AccountWallet(initialFunds, pix);
@@ -60,4 +63,5 @@ public class AccountRepository {
     public List<AccountWallet> list() {
         return this.accounts;
     }
+
 }

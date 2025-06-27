@@ -23,7 +23,7 @@ java {
 }
 
 application {
-    mainClass = 'java.poo.ntt.data.App'
+    mainClass = 'br.com.dio.Main'
 }
 
 tasks.named('test') {
